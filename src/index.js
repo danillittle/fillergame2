@@ -1,5 +1,6 @@
 import './style.scss';
 
+// заполнение матрицы значениями цветов
 const generateGridMatrix = () => {
   const grid = [];
 
@@ -42,6 +43,10 @@ class Game {
   constructor() {
     this.canvas = document.getElementById('game');
     this.ctx = this.canvas.getContext('2d');
+    this.score = {
+      user: 0,
+      ai: 0,
+    };
     this.grid = [];
     this.colors = ['#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#607D8B', '#009688', '#FFEB3B', '#795548'];
     this.Own = [];
@@ -56,14 +61,7 @@ class Game {
     makeUniqueStart(this.grid);
     this.draw();
 
-    document.addEventListener('click', (e) => {
-      const rect = this.canvas.getBoundingClientRect();
-      const coord = {
-        x: Math.floor((e.clientX - rect.left) / 40),
-        y: Math.floor((e.clientY - rect.top) / 40),
-      };
-      console.log(this.grid[coord.x][coord.y]);
-    });
+    document.addEventListener('click', (event) => this.handlerClick(event));
   }
 
   draw() {
@@ -71,7 +69,54 @@ class Game {
       for (let y = 0; y < 20; y += 1) {
         const color = this.grid[x][y];
         this.ctx.fillStyle = this.colors[color];
-        this.ctx.fillRect(40 * x, 40 * y, 40, 40);
+        this.ctx.fillRect(40 * y, 40 * x, 40, 40);
+      }
+    }
+
+    document.getElementById('user-score').innerHTML = this.score.user;
+    document.getElementById('ai-score').innerHTML = this.score.ai;
+  }
+
+  handlerClick(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const coord = {
+      x: Math.floor((event.clientX - rect.left) / 40),
+      y: Math.floor((event.clientY - rect.top) / 40),
+    };
+
+    const chooseColor = this.grid[coord.y][coord.x];
+    this.grab(19, 0, chooseColor, 1);
+  }
+
+  grab(x, y, color, owner) {
+    // если не выходит за рамки массива
+    if (x >= 0 && x < 20 && y >= 0 && y < 20) {
+      // если точка уже придалежит нам но цвет не совпадает
+      if (color !== this.grid[x][y] && this.Own[x][y] === owner) {
+        this.grid[x][y] = color;
+
+        this.grab(x - 1, y, color, owner);
+        this.grab(x + 1, y, color, owner);
+        this.grab(x, y - 1, color, owner);
+        this.grab(x, y + 1, color, owner);
+
+        this.draw();
+      }
+
+      // если цвет совпадает но не принадлежит нам
+      if (this.grid[x][y] === color && this.Own[x][y] === 0) {
+        this.Own[x][y] = owner; // присваиваем себе
+
+        if (owner === 1) {
+          this.score.user += 1;
+        } else {
+          this.score.ai += 1;
+        }
+
+        this.grab(x - 1, y, color, owner);
+        this.grab(x + 1, y, color, owner);
+        this.grab(x, y - 1, color, owner);
+        this.grab(x, y + 1, color, owner);
       }
     }
   }

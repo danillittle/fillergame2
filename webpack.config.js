@@ -1,8 +1,8 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -11,12 +11,12 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.js$/,
+        test: /\.(js)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'eslint-loader',
       },
       {
-        test: /\.js$/,
+        test: /\.(js)$/,
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
@@ -43,7 +43,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.ProgressPlugin(),
+    new CleanTerminalPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
@@ -59,7 +59,5 @@ module.exports = {
     compress: true,
     port: 9000,
   },
-  stats: {
-    colors: true,
-  },
+  stats: 'errors-warnings',
 };
