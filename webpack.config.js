@@ -14,6 +14,9 @@ module.exports = {
         test: /\.(js)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'eslint-loader',
+        options: {
+          configFile: '.eslintrc.json',
+        },
       },
       {
         test: /\.(js)$/,
@@ -40,6 +43,16 @@ module.exports = {
       //     use: ['css-loader', 'sass-loader'],
       //   }),
       // },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: './fonts',
+          },
+        },
+      },
     ],
   },
   plugins: [
@@ -59,5 +72,4 @@ module.exports = {
     compress: true,
     port: 9000,
   },
-  stats: 'errors-warnings',
 };
