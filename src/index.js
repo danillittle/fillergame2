@@ -101,7 +101,11 @@ class Game {
         };
 
         const chooseColor = this.grid[coord.y][coord.x];
-        this.grab(19, 0, chooseColor, 1);
+        if (chooseColor !== this.aiColor) {
+            this.userColor = chooseColor;
+            this.grab(19, 0, chooseColor, 1);
+        }
+        
         this.aiGrab();
     }
 
