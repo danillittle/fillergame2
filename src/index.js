@@ -72,10 +72,9 @@ class Game {
         this.grid = generateGridMatrix();
         this.Own = generateOwnMatrix();
         makeUniqueStart(this.grid);
-        this.draw();
-
         this.userColor = this.grid[19][0];
         this.aiColor = this.grid[0][19];
+        this.draw();
 
         document.addEventListener('click', event => this.handlerClick(event));
     }
@@ -91,6 +90,8 @@ class Game {
 
         document.getElementById('user-score').innerHTML = this.score.user;
         document.getElementById('ai-score').innerHTML = this.score.ai;
+        document.getElementById('user-color').style.backgroundColor = this.colors[this.userColor];
+        document.getElementById('ai-color').style.backgroundColor = this.colors[this.aiColor];
     }
 
     handlerClick(event) {
@@ -99,14 +100,33 @@ class Game {
             x: Math.floor((event.clientX - rect.left) / 40),
             y: Math.floor((event.clientY - rect.top) / 40),
         };
-
-        const chooseColor = this.grid[coord.y][coord.x];
-        if (chooseColor !== this.aiColor) {
-            this.userColor = chooseColor;
-            this.grab(19, 0, chooseColor, 1);
+        // если не выходит за рамки массива
+        if (coord.x >= 0 && coord.x < 20 && coord.y >= 0 && coord.y < 20) {
+            const chooseColor = this.grid[coord.y][coord.x];
+            if (chooseColor !== this.aiColor) {
+                this.userColor = chooseColor;
+                this.grab(19, 0, chooseColor, 1);
+                this.aiGrab();
+            }
         }
-        
-        this.aiGrab();
+
+        // Если захватили больше половины поля
+        if (this.score.user > (20 * 20 / 2)) {
+            alert('You win!\nYour score = ' + this.score.user); // Выводим сообщение
+            game.start(this, null); // Вызываем новую игру
+        }
+
+        // Если компьютер захватил больше половины поля
+        if (this.score.ai > (20 * 20 / 2)) {
+            alert('You lose!\nYour score = ' + this.score.user); // Выводим сообщение
+            game.start(this, null); // Вызываем новую игру
+        }
+
+        // Если по равным
+        if (this.score.ai == (20 * 20 / 2) && this.score.user == (20 * 20 / 2)) {
+            alert('Draw!'); // Выводим сообщение
+            game.start(this, null); // Вызываем новую игру
+        }
     }
 
     grab(x, y, color, owner) {
@@ -160,7 +180,6 @@ class Game {
 
     // Нахождение количества доступных для захвата ячеек для каждого цвета
     easyFind(x, y, temp, colors) {
-        console.log(temp);
         // если не выходит за рамки массива
         if (x >= 0 && x < 20 && y >= 0 && y < 20) {
             // если точка ещё не пройдена

@@ -22,15 +22,28 @@ body {
     margin: 0 auto;
 }
 
+#ai-color, #user-color {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
+
 .container {
     width: 800px;
     margin: 0 auto;
 }
 
-.score {
+.owners {
     display: flex;
     justify-content: space-between;
     font-size: 20px;
+    margin-bottom: 20px;
+    &__user {
+        text-align: left;
+    }
+    &__ai {
+        text-align: right;
+    }
 }
 
 // $colors1: #FF5722;
