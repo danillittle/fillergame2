@@ -1,20 +1,14 @@
 @import '~normalize.css';
 
-/* Coolors Exported Palette - coolors.co/242038-9067c6-8d86c9-cac4ce-f7ece1 */
-
-/* RGB */
-$color1: #292F36;
-$color2: #4ECDC4;
-$color3: #FF6B6B;
-$color4: #FFF;
+$color-bg: #292F36;
 
 * {
-    color: $color4;
+    color: #fff;
     font-family: 'Courier New', Courier, monospace;
 }
 
 body {
-    background: $color1;
+    background: $color-bg;
 }
 
 #game {

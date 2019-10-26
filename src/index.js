@@ -26,6 +26,29 @@ const generateOwnMatrix = () => {
     return own;
 };
 
+// Нахождение количества доступных для захвата ячеек для каждого цвета
+const easyFind = (x, y, temp, colors, grid, aiColor, userColor) => {
+    // если не выходит за рамки массива
+    if (x >= 0 && x < 20 && y >= 0 && y < 20) {
+        // если точка ещё не пройдена
+        if (temp[x][y] !== 1) {
+            temp[x][y] = 1;
+            // если точка не принадлежит ни компу, ни игроку
+            if (grid[x][y] !== aiColor) {
+                if (grid[x][y] !== userColor) {
+                    colors[grid[x][y]] += 1;
+                }
+                return;
+            } else {
+                easyFind(x - 1, y, temp, colors, grid, aiColor, userColor);
+                easyFind(x + 1, y, temp, colors, grid, aiColor, userColor);
+                easyFind(x, y - 1, temp, colors, grid, aiColor, userColor);
+                easyFind(x, y + 1, temp, colors, grid, aiColor, userColor);
+            }
+        }
+    }
+};
+
 // делаем уникальными стартовые позиции
 const makeUniqueStart = grid => {
     const newGrid = grid;
@@ -106,20 +129,20 @@ class Game {
 
         // Если захватили больше половины поля
         if (this.score.user > (20 * 20 / 2)) {
-            alert('You win!\nYour score = ' + this.score.user); // Выводим сообщение
-            game.start(this, null); // Вызываем новую игру
+            alert('You win!\nYour score = ' + this.score.user);
+            game.start(this, null);
         }
 
         // Если компьютер захватил больше половины поля
         if (this.score.ai > (20 * 20 / 2)) {
-            alert('You lose!\nYour score = ' + this.score.user); // Выводим сообщение
-            game.start(this, null); // Вызываем новую игру
+            alert('You lose!\nYour score = ' + this.score.user);
+            game.start(this, null);
         }
 
         // Если по равным
         if (this.score.ai == (20 * 20 / 2) && this.score.user == (20 * 20 / 2)) {
-            alert('Draw!'); // Выводим сообщение
-            game.start(this, null); // Вызываем новую игру
+            alert('Draw!');
+            game.start(this, null);
         }
     }
 
@@ -162,40 +185,20 @@ class Game {
         const temp = Array(20).fill().map(() => Array(20).fill(0));
         const colors = Array(8).fill(0);
 
-        this.easyFind(0, 19, temp, colors);
+        easyFind(0, 19, temp, colors, this.grid, this.aiColor, this.userColor);
+        
         console.clear();
-        colors.map((el, index) => {
+        colors.map((color, index) => {
             console.log(`%c____${colors[index]}____`, `background: ${this.colors[index]}; color: #fff;`);
         });
         
-        let max = this.aiColor; // 7
+        let max = this.aiColor;
         max = colors.indexOf(Math.max(...colors));
         this.aiColor = max;
         this.grab(0, 19, this.aiColor, 2);
     }
 
-    // Нахождение количества доступных для захвата ячеек для каждого цвета
-    easyFind(x, y, temp, colors) {
-        // если не выходит за рамки массива
-        if (x >= 0 && x < 20 && y >= 0 && y < 20) {
-            // если точка ещё не пройдена
-            if (temp[x][y] !== 1) {
-                temp[x][y] = 1;
-                // если точка не принадлежит ни компу, ни игроку
-                if (this.grid[x][y] !== this.aiColor) {
-                    if (this.grid[x][y] !== this.userColor) {
-                        colors[this.grid[x][y]] += 1;
-                    }
-                    return;
-                } else {
-                    this.easyFind(x - 1, y, temp, colors);
-                    this.easyFind(x + 1, y, temp, colors);
-                    this.easyFind(x, y - 1, temp, colors);
-                    this.easyFind(x, y + 1, temp, colors);
-                }
-            }
-        }
-    }
+    
 }
 
 const game = new Game();
