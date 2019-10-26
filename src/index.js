@@ -50,16 +50,7 @@ class Game {
             ai: 0,
         };
         this.grid = [];
-        this.colors = [
-            '#FF5722',
-            '#E91E63',
-            '#9C27B0',
-            '#3F51B5',
-            '#607D8B',
-            '#009688',
-            '#FFEB3B',
-            '#795548',
-        ];
+        this.colors = ['#FF5722','#E91E63', '#9C27B0', '#3F51B5', '#607D8B', '#009688', '#FFEB3B', '#795548'];
         this.Own = [];
         this.userColor;
         this.aiColor;
@@ -68,6 +59,9 @@ class Game {
     start() {
         this.canvas.width = 800;
         this.canvas.height = 800;
+
+        this.score.user = 0;
+        this.score.ai = 0;
 
         this.grid = generateGridMatrix();
         this.Own = generateOwnMatrix();
@@ -165,12 +159,14 @@ class Game {
     // Ход компьютера
     aiGrab() {
         // Временная матрица для отметок о пройденности
-        const temp = Array(20)
-            .fill()
-            .map(() => Array(20).fill(0));
+        const temp = Array(20).fill().map(() => Array(20).fill(0));
         const colors = Array(8).fill(0);
 
         this.easyFind(0, 19, temp, colors);
+        console.clear();
+        colors.map((el, index) => {
+            console.log(`%c____${colors[index]}____`, `background: ${this.colors[index]}; color: #fff;`);
+        });
         
         let max = this.aiColor; // 7
         max = colors.indexOf(Math.max(...colors));
@@ -186,8 +182,10 @@ class Game {
             if (temp[x][y] !== 1) {
                 temp[x][y] = 1;
                 // если точка не принадлежит ни компу, ни игроку
-                if (this.grid[x][y] !== this.aiColor && this.grid[x][y] !== this.userColor) {
-                    colors[this.grid[x][y]] += 1;
+                if (this.grid[x][y] !== this.aiColor) {
+                    if (this.grid[x][y] !== this.userColor) {
+                        colors[this.grid[x][y]] += 1;
+                    }
                     return;
                 } else {
                     this.easyFind(x - 1, y, temp, colors);
