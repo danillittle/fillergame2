@@ -40,16 +40,6 @@ module.exports = {
             //     use: ['css-loader', 'sass-loader'],
             //   }),
             // },
-            {
-                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: './fonts',
-                    },
-                },
-            },
         ],
     },
     plugins: [
@@ -61,11 +51,11 @@ module.exports = {
         new ExtractTextPlugin('style.[hash].css'),
     ],
     output: {
-        path: path.join(__dirname, './dist'),
+        path: path.join(__dirname, './docs'),
         filename: 'index.[hash].js',
     },
     devServer: {
-        contentBase: path.join(__dirname, './dist'),
+        contentBase: path.join(__dirname, './docs'),
         compress: true,
         port: 9000,
     },
